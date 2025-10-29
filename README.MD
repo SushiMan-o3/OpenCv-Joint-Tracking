@@ -11,8 +11,8 @@ Some boring description
 
 1. **Clone the repository**
 ```bash
-git clone <your-repo-url>
-cd Hackathon-Project
+git clone https://github.com/SushiMan-o3/Shadow-Boxing-Trainer.git
+cd Shadow-Boxing-Trainer
 ```
 
 2. **Install Python dependencies**
