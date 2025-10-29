@@ -1,26 +1,9 @@
 import cv2 as cv
 import numpy as np
-import math
 import mediapipe as mp
 import json
 from typing import Optional, Tuple, Sequence
 
-
-def getAngle(a: Tuple[int, int], b: Tuple[int, int], c: Tuple[int, int]) -> float:
-    """
-    Calculate the angle ABC formed by three points.
-    """
-    ab = (b[0] - a[0], b[1] - a[1])
-    bc = (c[0] - b[0], c[1] - b[1])
-    dot_product = ab[0] * bc[0] + ab[1] * bc[1]
-    mag_ab = math.hypot(ab[0], ab[1])
-    mag_bc = math.hypot(bc[0], bc[1])
-    if mag_ab == 0 or mag_bc == 0:
-        return 0.0
-    
-    cos_angle = dot_product / (mag_ab * mag_bc)
-
-    return math.degrees(math.acos(np.clip(cos_angle, -1.0, 1.0)))
 
 def landmark_to_pixel_xy(landmarks: Sequence, landmark_index: int, 
                          image_width: int, image_height: int, 
@@ -38,35 +21,6 @@ def landmark_to_pixel_xy(landmarks: Sequence, landmark_index: int,
         x_px = int(np.clip(p.x * image_width,  0, image_width  - 1))
         y_px = int(np.clip(p.y * image_height, 0, image_height - 1))
         return (x_px, y_px)
-
-
-def draw_joint_point(image_bgr: np.ndarray, point_xy: Optional[Tuple[int, int]],
-                     bgr_color: Tuple[int, int, int], radius: int = 8, 
-                     label_text: Optional[str] = None) -> None:
-    """
-    Draw a filled circle at a joint location, and an optional text label next to it.
-    Does nothing if point_xy is None.
-    """
-    if point_xy is None:
-        return
-    else:
-        cv.circle(image_bgr, point_xy, radius, bgr_color, thickness=-1)
-
-        if label_text:
-            cv.putText(image_bgr, label_text,(point_xy[0] + 8, point_xy[1] - 8),
-                    cv.FONT_HERSHEY_SIMPLEX, 0.6, bgr_color, 2, cv.LINE_AA )
-
-
-def draw_line_segment(image_bgr: np.ndarray, point_a_xy: Optional[Tuple[int, int]],
-                      point_b_xy: Optional[Tuple[int, int]], bgr_color: Tuple[int, int, int],
-                      thickness: int = 6) -> None:
-    """
-    Draw a straight line between two points. Skips if either point is None.
-    """
-    if point_a_xy is None or point_b_xy is None:
-        return
-    else:
-        cv.line(image_bgr, point_a_xy, point_b_xy, bgr_color, thickness, cv.LINE_AA)
 
 
 def process_video(input_path: str) -> None:

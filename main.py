@@ -1,7 +1,6 @@
-import VideoProcessor
+from VideoProcessor import process_video
 import math
 import numpy as np
-import json
 from typing import Tuple
 
 
@@ -22,8 +21,8 @@ def getAngle(a: Tuple[int, int], b: Tuple[int, int], c: Tuple[int, int]) -> floa
     return math.degrees(math.acos(np.clip(cos_angle, -1.0, 1.0)))
 
 def main():
-    input_video_path = "Videos/input.MOV"
-    VideoProcessor.process_video(input_video_path)
+    input_video_path = "Input/input.mp4"
+    process_video(input_video_path)
 
 if __name__ == "__main__":
     main()
