@@ -2,6 +2,7 @@ import cv2 as cv
 import numpy as np
 import math
 import mediapipe as mp
+import json
 from typing import Optional, Tuple, Sequence
 
 
@@ -87,28 +88,49 @@ def process_video(input_path: str) -> None:
     
     ret, frame = cap.read()
     h, w = frame.shape[:2]
+
     output = cv.VideoWriter("Output/output.mp4",
                              cv.VideoWriter_fourcc(*'mp4v'),
                              30,
-                             (w, h))
+                             (w, h)
+                            )
+        
+    curr_index = 0
+    landmark_data = {}
 
     while True:
         ret, frame = cap.read()
-
         if not ret:
             break
 
+        rgb = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
+        results = mp_pose.process(rgb) # runs a pose model for the frame
+
+        landmarks = {}
+
         # Draw landmarks if present
-        results = mp_pose.process(frame) # runs a pose model for the frame
-        
-        mp_drawing.draw_landmarks(
-            frame, # draws image on the frame itself
-            results.pose_landmarks, # for each of the frame gitwork
-            mp.solutions.pose.POSE_CONNECTIONS, # for the lines connecting them all 
-            mp_drawing.DrawingSpec(color=(180,180,180), thickness=4, circle_radius=2), # for the dots
-            mp_drawing.DrawingSpec(color=(180,180,180), thickness=6, circle_radius=2) # for the lines
-        )
-        
+        if results.pose_landmarks is not None:
+            # draw using the same results
+            mp_drawing.draw_landmarks(
+                frame, # draws image on the frame itself
+                results.pose_landmarks, # for each of the frame gitwork
+                mp.solutions.pose.POSE_CONNECTIONS, # for the lines connecting them all 
+                mp_drawing.DrawingSpec(color=(180,180,180), thickness=4, circle_radius=2), # for the dots
+                mp_drawing.DrawingSpec(color=(180,180,180), thickness=6, circle_radius=2) # for the lines
+            )
+
+            # Collecting landmark data for the current frame
+            lm_list = results.pose_landmarks.landmark
+            for lm in mp.solutions.pose.PoseLandmark:
+                xy = landmark_to_pixel_xy(lm_list, lm.value, w, h, min_visibility=0.4)
+                landmarks[lm.name] = xy
+        else:
+            for lm in mp.solutions.pose.PoseLandmark:
+                landmarks[lm.name] = None
+
+
+        landmark_data[curr_index] = landmarks
+
         # saving the processed frame to output video
         output.write(frame)
         # Display the resulting frame
@@ -117,8 +139,14 @@ def process_video(input_path: str) -> None:
         # quits the loop if q is pressed
         if cv.waitKey(1) == ord('q'):
             break
+
+        curr_index += 1
     
     # When everything done, release the capture
     cap.release()
     output.release()
     cv.destroyAllWindows()
+
+    # Saving the landmarks data to a json file
+    with open("Output/data.json", "w") as f:
+        json.dump(landmark_data, f, indent=4)
