@@ -1,6 +1,6 @@
-# Boxing Trainer
+# Open CV Project
 
-Some boring description
+Still trying to figure out what to do with this data, but regardless currently, it basically takes all major joints from the human body and gets a coordinate and stores the data in Output/data.json and stores the annotated video in Output/output.mp4. 
 
 ## Installation
 
@@ -11,7 +11,7 @@ Some boring description
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/SushiMan-o3/Shadow-Boxing-Trainer.git
+git clone https://github.com/SushiMan-o3/OpenCv-Project.git
 cd Shadow-Boxing-Trainer
 ```
 
