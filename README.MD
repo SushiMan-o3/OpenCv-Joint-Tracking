@@ -1,6 +1,6 @@
-# Open CV Project
+# Open CV Joint Tracking
 
-Still trying to figure out what to do with this data, but regardless currently, it basically takes all major joints from the human body and gets a coordinate and stores the data in Output/data.json and stores the annotated video in Output/output.mp4. 
+Still trying to figure out what to do with this data, but regardless currently, it basically takes all major joints using media pipe from the human body and gets a coordinate and stores the data in Output/data.json and stores the annotated video in Output/output.mp4. 
 
 ## Installation
 
