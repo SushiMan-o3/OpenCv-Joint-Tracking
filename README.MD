@@ -12,7 +12,7 @@ Still trying to figure out what to do with this data, but regardless currently, 
 1. **Clone the repository**
 ```bash
 git clone https://github.com/SushiMan-o3/OpenCv-Project.git
-cd Shadow-Boxing-Trainer
+cd OpenCv-Project
 ```
 
 2. **Install Python dependencies**
